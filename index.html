@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #todo-list li {
+            padding: 8px;
+            margin: 4px 0;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDropIn 0.5s forwards;
+        }
+        @keyframes fadeInDropIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket To-Do List</h1>
+    <form id="todo-form">
+        <input type="text" id="todo-input" placeholder="Enter item name" required>
+        <button type="submit">Add</button>
+    </form>
+    <ul id="todo-list"></ul>
+
+    <script>
+        let websocket = new WebSocket('ws://localhost:8765');
+        let todoList = document.getElementById('todo-list');
+        let todoForm = document.getElementById('todo-form');
+        let todoInput = document.getElementById('todo-input');
+
+        websocket.onopen = () => {
+            console.log('WebSocket connection opened');
+        };
+
+        websocket.onmessage = (event) => {
+            console.log('Message from server:', event.data);
+            let items = JSON.parse(event.data);
+            todoList.innerHTML = '';
+            items.forEach(item => {
+                let li = document.createElement('li');
+                li.textContent = item.name;
+                todoList.appendChild(li);
+            });
+        };
+
+        websocket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        websocket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        todoForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            let itemName = todoInput.value.trim();
+            if (itemName) {
+                websocket.send(JSON.stringify({ name: itemName }));
+                todoInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
