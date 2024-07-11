@@ -24,8 +24,10 @@ Homebrew is a package manager for macOS. You can install it using the following 
 
 ssh "/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-"python3 -V"
-"pip3 -V"
+- "python3 -V"
+- "pip3 -V"
+
+
 To check if they are installed
 
 ### Step 2: 
@@ -37,4 +39,6 @@ To check if they are installed
 When done 👍
 
 - ssh "python3 server.py" 
+
+
 To run the websocket server
